@@ -47,8 +47,3 @@ export const analyzeJobDescription = async (jobInfo: {title: string, company: st
 export const findSimilarJobs = async (job: Omit<Job, 'id' | 'status' | 'analysis' | 'skills'>): Promise<Omit<Job, 'id' | 'status' | 'analysis'>[]> => {
     return callApi<Omit<Job, 'id' | 'status' | 'analysis'>[]>('findSimilarJobs', { job });
 };
-
-export const generateResourceContent = async (topic: string, audience: 'Job Seeker' | 'Employer'): Promise<string> => {
-    const result = await callApi<{ content: string }>('generateResourceContent', { topic, audience });
-    return result.content;
-};
