@@ -1,0 +1,6 @@
+{
+  "name": "New Standard Staffing Solutions",
+  "description": "A modern employment agency website leveraging AI to streamline the job application process. Job seekers can paste their resume and have it automatically parsed and structured by the Gemini API, creating a professional profile in seconds.",
+  "requestFramePermissions": [],
+  "prompt": ""
+}

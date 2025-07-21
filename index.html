@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>New Standard Staffing Solutions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      :root {
+        --radius: 0.75rem;
+      }
+      body {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+    </style>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              border: "hsl(220 13% 91%)",
+              input: "hsl(220 13% 88%)",
+              ring: "hsl(217 91% 60%)",
+              background: "hsl(0 0% 100%)",
+              foreground: "hsl(224 10% 10%)",
+              primary: {
+                DEFAULT: "hsl(217 91% 60%)",
+                foreground: "hsl(210 20% 98%)",
+              },
+              secondary: {
+                DEFAULT: "hsl(220 13% 96%)",
+                foreground: "hsl(220 10% 25%)",
+              },
+              destructive: {
+                DEFAULT: "hsl(0 84% 60%)",
+                foreground: "hsl(0 0% 100%)",
+              },
+              muted: {
+                foreground: "hsl(220 9% 46%)",
+                DEFAULT: "hsl(220 13% 96%)",
+              },
+              accent: {
+                 DEFAULT: "hsl(220 13% 96%)",
+                 foreground: "hsl(220 10% 20%)",
+              },
+              card: {
+                DEFAULT: "hsl(0 0% 100%)",
+                foreground: "hsl(224 10% 10%)",
+              },
+            },
+            borderRadius: {
+              lg: "var(--radius)",
+              md: "calc(var(--radius) - 4px)",
+              sm: "calc(var(--radius) - 8px)",
+            },
+            boxShadow: {
+              'custom': '0 1px 3px 0 rgb(0 0 0 / 0.07), 0 1px 2px -1px rgb(0 0 0 / 0.07)',
+              'custom-lg': '0 8px 24px rgb(0 0 0 / 0.08)',
+            },
+            keyframes: {
+                "accordion-down": {
+                    from: { height: "0" },
+                    to: { height: "var(--radix-accordion-content-height)" },
+                },
+                "accordion-up": {
+                    from: { height: "var(--radix-accordion-content-height)" },
+                    to: { height: "0" },
+                },
+                "fade-in-up": {
+                    '0%': { opacity: '0', transform: 'translateY(10px)' },
+                    '100%': { opacity: '1', transform: 'translateY(0)' },
+                },
+                 "background-pan": {
+                    '0%': { 'background-position': '0% 50%' },
+                    '100%': { 'background-position': '100% 50%' },
+                }
+            },
+            animation: {
+                "accordion-down": "accordion-down 0.2s ease-out",
+                "accordion-up": "accordion-up 0.2s ease-out",
+                "fade-in-up": "fade-in-up 0.5s ease-out forwards",
+                "background-pan": "background-pan 15s ease infinite alternate",
+            },
+          }
+        }
+      }
+    </script>
+    <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.1.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
+    "react/": "https://esm.sh/react@^19.1.0/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.10.0",
+    "lucide-react": "https://esm.sh/lucide-react@^0.525.0",
+    "recharts": "https://esm.sh/recharts@^2.13.0",
+    "netlify-identity-widget": "https://esm.sh/netlify-identity-widget@^1.9.2",
+    "@netlify/functions": "https://esm.sh//@netlify/functions@^4.1.12"
+  }
+}
+</script>
+<script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body class="bg-secondary text-foreground font-sans">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

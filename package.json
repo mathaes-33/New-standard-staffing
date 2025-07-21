@@ -1,0 +1,25 @@
+{
+  "name": "new-standard-staffing-solutions",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "@google/genai": "^1.10.0",
+    "lucide-react": "^0.525.0",
+    "recharts": "^2.13.0",
+    "netlify-identity-widget": "^1.9.2",
+    "@netlify/functions": "^4.1.12"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "typescript": "~5.7.2",
+    "vite": "^6.2.0"
+  }
+}
