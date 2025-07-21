@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Briefcase, GraduationCap, User, Mail, Phone, Bot, Search, Wind, Sparkles, Building, MapPin, Home, Building2, Lightbulb, Users, MailQuestion, LayoutDashboard, CheckCircle, XCircle, ClipboardList, BookOpen, Menu, X, Check, Clock } from 'lucide-react';
+import { Briefcase, GraduationCap, User, Mail, Phone, Bot, Search, Wind, Sparkles, Building, MapPin, Home, Building2, Lightbulb, Users, MailQuestion, LayoutDashboard, CheckCircle, XCircle, ClipboardList, BookOpen, Menu, X, Check, Clock, ChevronDown } from 'lucide-react';
 
 export const IconBriefcase = (props: React.ComponentProps<typeof Briefcase>) => <Briefcase {...props} />;
 export const IconGraduationCap = (props: React.ComponentProps<typeof GraduationCap>) => <GraduationCap {...props} />;
@@ -24,6 +24,7 @@ export const IconMenu = (props: React.ComponentProps<typeof Menu>) => <Menu {...
 export const IconX = (props: React.ComponentProps<typeof X>) => <X {...props} />;
 export const IconCheck = (props: React.ComponentProps<typeof Check>) => <Check {...props} />;
 export const IconClock = (props: React.ComponentProps<typeof Clock>) => <Clock {...props} />;
+export const IconChevronDown = (props: React.ComponentProps<typeof ChevronDown>) => <ChevronDown {...props} />;
 
 
 // Admin Icons
