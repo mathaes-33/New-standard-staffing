@@ -1,64 +1,43 @@
 
-import React, { useState, useCallback } from 'react';
-import Button from './ui/Button';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/Card';
-import { generateResourceContent } from '../services/geminiService';
-import { IconSparkles, Spinner } from './icons';
+import { IconChevronDown } from './icons';
 
 interface ResourceContentProps {
   title: string;
-  description: string;
-  audience: 'Job Seeker' | 'Employer';
+  content: string[];
 }
 
-const ResourceContent: React.FC<ResourceContentProps> = ({ title, description, audience }) => {
-  const [content, setContent] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const handleGenerateContent = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const generatedContent = await generateResourceContent(title, audience);
-      setContent(generatedContent);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An unknown error occurred.');
-    } finally {
-      setIsLoading(false);
-    }
-  }, [title, audience]);
+const ResourceContent: React.FC<ResourceContentProps> = ({ title, content }) => {
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <Card className="bg-slate-50/50">
-      <CardHeader>
-        <CardTitle className="text-lg">{title}</CardTitle>
-        <p className="text-sm text-muted-foreground">{description}</p>
+    <Card className="bg-slate-50/50 overflow-hidden">
+      <CardHeader className="p-0">
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="flex justify-between items-center w-full p-6 text-left"
+          aria-expanded={isOpen}
+          aria-controls={`resource-content-${title.replace(/\s+/g, '-')}`}
+        >
+          <CardTitle className="text-lg">{title}</CardTitle>
+          <IconChevronDown
+            className={`h-5 w-5 text-muted-foreground transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+          />
+        </button>
       </CardHeader>
-      <CardContent>
-        {!content && (
-          <Button onClick={handleGenerateContent} disabled={isLoading} variant="secondary">
-            {isLoading ? (
-              <>
-                <Spinner className="-ml-1 mr-3 h-5 w-5" />
-                Generating...
-              </>
-            ) : (
-              <>
-                <IconSparkles className="mr-2 h-4 w-4" /> Get AI Advice
-              </>
-            )}
-          </Button>
-        )}
-        
-        {error && <p className="mt-4 text-sm text-destructive font-medium">{error}</p>}
-
-        {content && (
-          <div className="mt-4 text-muted-foreground whitespace-pre-wrap animate-fade-in">
-            {content}
-          </div>
-        )}
-      </CardContent>
+      {isOpen && (
+        <CardContent
+          id={`resource-content-${title.replace(/\s+/g, '-')}`}
+          className="p-6 pt-0 animate-accordion-down"
+        >
+          <ul className="list-disc pl-5 space-y-2 text-muted-foreground">
+            {content.map((item, index) => (
+              <li key={index}>{item}</li>
+            ))}
+          </ul>
+        </CardContent>
+      )}
     </Card>
   );
 };
