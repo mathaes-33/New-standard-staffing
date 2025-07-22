@@ -1,18 +1,31 @@
+
 import React from 'react';
-import type { User } from 'netlify-identity-widget';
-import netlifyIdentity from 'netlify-identity-widget';
+import { useAuth0 } from '@auth0/auth0-react';
 import Button from './ui/Button';
+import { Spinner } from './icons';
 
-interface AuthProps {
-    user: User | null;
-}
+const Auth: React.FC = () => {
+  const { 
+    loginWithRedirect, 
+    logout, 
+    user, 
+    isAuthenticated, 
+    isLoading 
+  } = useAuth0();
 
-const Auth: React.FC<AuthProps> = ({ user }) => {
-  const handleLogin = () => netlifyIdentity.open('login');
-  const handleSignup = () => netlifyIdentity.open('signup');
-  const handleLogout = () => netlifyIdentity.logout();
+  const handleLogin = () => loginWithRedirect();
+  const handleSignup = () => loginWithRedirect({ authorizationParams: { screen_hint: 'signup' } });
+  const handleLogout = () => logout({ logoutParams: { returnTo: window.location.origin } });
 
-  if (user) {
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-9 w-44">
+        <Spinner className="h-5 w-5 text-primary" />
+      </div>
+    );
+  }
+
+  if (isAuthenticated && user) {
     return (
       <div className="flex items-center gap-2">
         <span className="text-sm text-muted-foreground hidden lg:inline">{user.email}</span>
@@ -24,7 +37,7 @@ const Auth: React.FC<AuthProps> = ({ user }) => {
   return (
     <div className="flex items-center gap-2">
       <Button onClick={handleLogin} variant="secondary" className="h-9 px-3">Login</Button>
-      <Button onClick={handleSignup} className="h-9 px-3">Signup</Button>
+      <Button onClick={handleSignup} className="h-9 px-3">Sign Up</Button>
     </div>
   );
 };
