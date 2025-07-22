@@ -1,15 +1,14 @@
 
+
 import React, { useState, useEffect } from 'react';
-import type { User } from 'netlify-identity-widget';
 import { IconWind, IconMenu, IconX } from './icons';
 import Auth from './Auth';
 
 interface HeaderProps {
-  user: User | null;
   isAdmin: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({ user, isAdmin }) => {
+const Header: React.FC<HeaderProps> = ({ isAdmin }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const scrollToSection = (sectionId: string) => {
@@ -50,7 +49,7 @@ const Header: React.FC<HeaderProps> = ({ user, isAdmin }) => {
           <nav className="flex items-center space-x-6 text-sm font-medium">
             {navLinks}
           </nav>
-          <Auth user={user} />
+          <Auth />
         </div>
         <button className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Toggle menu">
           {isMenuOpen ? <IconX className="h-6 w-6" /> : <IconMenu className="h-6 w-6" />}
@@ -61,7 +60,7 @@ const Header: React.FC<HeaderProps> = ({ user, isAdmin }) => {
            <nav className="flex flex-col items-center space-y-6 py-8 text-base font-medium">
             {navLinks}
             <div className="pt-4 border-t border-border w-4/5 flex justify-center">
-                 <Auth user={user} />
+                 <Auth />
             </div>
            </nav>
         </div>
