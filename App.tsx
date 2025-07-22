@@ -1,7 +1,7 @@
 
 
-import React, { useState, useEffect } from 'react';
-import netlifyIdentity from 'netlify-identity-widget';
+import React, { useState } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
 import Header from './components/Header';
 import HeroSection from './components/HeroSection';
 import ResumeParser from './components/ResumeParser';
@@ -15,49 +15,21 @@ import Resources from './components/Resources';
 import TermsAndConditions from './components/TermsAndConditions';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import AuthWall from './components/AuthWall';
-import { IconClipboardList, IconSearch, IconBuilding2 } from './components/icons';
+import { IconClipboardList, IconSearch, IconBuilding2, Spinner } from './components/icons';
 import type { Job, Application } from './types';
 
 function App() {
-  const [user, setUser] = useState<netlifyIdentity.User | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const { user, isAuthenticated, isLoading, loginWithRedirect } = useAuth0();
+  
+  // This namespace must match the one defined in your Auth0 Rule or Action
+  // to correctly read user roles from the ID token.
+  const AUTH0_ROLES_NAMESPACE = 'https://new-standard-staffing.com/roles';
+  const isAdmin = user?.[AUTH0_ROLES_NAMESPACE]?.includes('admin') ?? false;
+
   const [jobs, setJobs] = useState<Job[]>([]);
   const [applications, setApplications] = useState<Application[]>([]);
   const [isTermsOpen, setIsTermsOpen] = useState(false);
   const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
-
-  useEffect(() => {
-    const updateUserState = (user: netlifyIdentity.User | null) => {
-        setUser(user);
-        setIsAdmin(user?.app_metadata?.roles?.includes('admin') ?? false);
-    }
-    
-    const onLogin = (user: netlifyIdentity.User) => {
-        updateUserState(user);
-        netlifyIdentity.close();
-    };
-
-    const onLogout = () => {
-        updateUserState(null);
-    };
-
-    // The 'init' event fires when the widget has initialized, passing the current user.
-    // This is the recommended way to handle initial user state.
-    netlifyIdentity.on('init', updateUserState);
-    netlifyIdentity.on('login', onLogin);
-    netlifyIdentity.on('logout', onLogout);
-    
-    // Initialize the widget after listeners are set up.
-    netlifyIdentity.init();
-
-    // Cleanup listeners on component unmount.
-    return () => {
-        netlifyIdentity.off('init', updateUserState);
-        netlifyIdentity.off('login', onLogin);
-        netlifyIdentity.off('logout', onLogout);
-    }
-  }, []);
-
 
   const handleJobSubmit = (newJob: Job) => {
     setJobs(prevJobs => [...prevJobs, newJob]);
@@ -69,15 +41,16 @@ function App() {
         job.id === jobId ? { ...job, status } : job
       )
     );
-    // Also remove from applications if rejected, as an example of state consistency
     if(status === 'rejected') {
         setApplications(prevApps => prevApps.filter(app => app.job.id !== jobId));
     }
   };
 
   const handleApplyForJob = (jobToApply: Job) => {
-    if (!user) {
-        netlifyIdentity.open('login');
+    if (!isAuthenticated) {
+        loginWithRedirect({
+            appState: { returnTo: window.location.pathname + '#parser-section' }
+        });
         return;
     }
     if (applications.some(app => app.job.id === jobToApply.id)) return;
@@ -89,7 +62,6 @@ function App() {
     };
     setApplications(prevApps => [newApplication, ...prevApps]);
 
-    // Simulate status progression for demonstration
     setTimeout(() => {
       setApplications(prevApps =>
         prevApps.map(app =>
@@ -109,16 +81,23 @@ function App() {
       );
     }, 30000);
   };
-
+  
+  if (isLoading) {
+    return (
+        <div className="flex items-center justify-center min-h-screen bg-secondary">
+            <Spinner className="h-10 w-10 text-primary" />
+        </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-secondary font-sans">
-      <Header user={user} isAdmin={isAdmin} />
+      <Header isAdmin={isAdmin} />
       <main className="flex-grow">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20 space-y-16 md:space-y-24">
             <HeroSection />
             <div id="parser-section" className="scroll-mt-20">
-              {user ? (
+              {isAuthenticated ? (
                 <ResumeParser onApply={handleApplyForJob} applications={applications} />
               ) : (
                 <AuthWall 
@@ -129,7 +108,7 @@ function App() {
               )}
             </div>
             <div id="tracking-section" className="scroll-mt-20">
-              {user ? (
+              {isAuthenticated ? (
                 <ApplicationTracking applications={applications} />
               ) : (
                 <AuthWall
@@ -140,7 +119,7 @@ function App() {
               )}
             </div>
             <div id="employer-section" className="scroll-mt-20">
-             {user ? (
+             {isAuthenticated ? (
                 <EmployerSection onJobSubmit={handleJobSubmit} />
               ) : (
                 <AuthWall
