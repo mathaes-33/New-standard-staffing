@@ -38,3 +38,4 @@ if (auth0Domain === 'YOUR_AUTH0_DOMAIN' || auth0ClientId === 'YOUR_AUTH0_CLIENT_
       </Auth0Provider>
     </React.StrictMode>
   );
+}
