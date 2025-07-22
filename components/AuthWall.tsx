@@ -1,6 +1,7 @@
 
+
 import React from 'react';
-import netlifyIdentity from 'netlify-identity-widget';
+import { useAuth0 } from '@auth0/auth0-react';
 import { Card, CardContent } from './ui/Card';
 import Button from './ui/Button';
 
@@ -11,8 +12,10 @@ interface AuthWallProps {
 }
 
 const AuthWall: React.FC<AuthWallProps> = ({ icon: Icon, title, description }) => {
-  const handleLogin = () => netlifyIdentity.open('login');
-  const handleSignup = () => netlifyIdentity.open('signup');
+  const { loginWithRedirect } = useAuth0();
+
+  const handleLogin = () => loginWithRedirect();
+  const handleSignup = () => loginWithRedirect({ authorizationParams: { screen_hint: 'signup' } });
 
   return (
     <Card>
