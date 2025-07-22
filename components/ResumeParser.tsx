@@ -7,7 +7,7 @@ import ProfileDisplay from './ProfileDisplay';
 import MatchingJobs from './MatchingJobs';
 import FormW4 from './FormW4';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from './ui/Card';
-import { IconBot, IconSearch, IconSparkles, Spinner } from './icons';
+import { IconBot, IconSearch, Spinner } from './icons';
 import { parseResume, findMatchingJobs } from '../services/geminiService';
 import type { ParsedResume, Job, Application } from '../types';
 
@@ -28,6 +28,20 @@ const ResumeParser: React.FC<ResumeParserProps> = ({ onApply, applications }) =>
   
   const [showW4Form, setShowW4Form] = useState(false);
 
+  const handleFindJobs = useCallback(async (profile: ParsedResume) => {
+    setIsFindingJobs(true);
+    setJobsError(null);
+    setMatchingJobs(null);
+    try {
+        const jobs = await findMatchingJobs(profile);
+        setMatchingJobs(jobs);
+    } catch(err) {
+        setJobsError(err instanceof Error ? err.message : 'An unknown error occurred while finding jobs.');
+    } finally {
+        setIsFindingJobs(false);
+    }
+  }, []);
+
   const handleAnalyze = useCallback(async () => {
     if (!resumeText.trim()) {
       setParseError('Please paste your resume text into the box.');
@@ -42,28 +56,13 @@ const ResumeParser: React.FC<ResumeParserProps> = ({ onApply, applications }) =>
     try {
       const data = await parseResume(resumeText);
       setParsedData(data);
+      handleFindJobs(data); // Automatically find jobs after successful parse
     } catch (err) {
       setParseError(err instanceof Error ? err.message : 'An unknown error occurred.');
     } finally {
       setIsParsing(false);
     }
-  }, [resumeText]);
-
-  const handleFindJobs = useCallback(async () => {
-    if (!parsedData) return;
-
-    setIsFindingJobs(true);
-    setJobsError(null);
-    setMatchingJobs(null);
-    try {
-        const jobs = await findMatchingJobs(parsedData);
-        setMatchingJobs(jobs);
-    } catch(err) {
-        setJobsError(err instanceof Error ? err.message : 'An unknown error occurred while finding jobs.');
-    } finally {
-        setIsFindingJobs(false);
-    }
-  }, [parsedData]);
+  }, [resumeText, handleFindJobs]);
 
 
   return (
@@ -88,18 +87,18 @@ const ResumeParser: React.FC<ResumeParserProps> = ({ onApply, applications }) =>
                   placeholder="Paste the full text of your resume here..."
                   value={resumeText}
                   onChange={(e) => setResumeText(e.target.value)}
-                  disabled={isParsing}
+                  disabled={isParsing || isFindingJobs}
                 />
               </div>
-              <Button onClick={handleAnalyze} disabled={isParsing || !resumeText} className="w-full sm:w-auto">
-                {isParsing ? (
+              <Button onClick={handleAnalyze} disabled={isParsing || isFindingJobs || !resumeText} className="w-full sm:w-auto">
+                {(isParsing || isFindingJobs) ? (
                   <>
                     <Spinner className="-ml-1 mr-3" />
-                    Analyzing...
+                    {isParsing ? 'Analyzing...' : 'Finding Jobs...'}
                   </>
                 ) : (
                   <>
-                    <IconBot className="mr-2 h-4 w-4" /> Analyze with AI
+                    <IconBot className="mr-2 h-4 w-4" /> Analyze & Find Jobs
                   </>
                 )}
               </Button>
@@ -113,25 +112,12 @@ const ResumeParser: React.FC<ResumeParserProps> = ({ onApply, applications }) =>
         <div className="animate-fade-in-up space-y-12">
            <ProfileDisplay data={parsedData} />
            
-            <div className="text-center">
-                <IconSparkles className="h-10 w-10 text-amber-500 mb-3 mx-auto" />
-                <h2 className="text-2xl font-bold tracking-tight">Ready for the Next Step?</h2>
-                <p className="mb-6 max-w-prose text-muted-foreground mx-auto">
-                    Now that your profile is ready, let our AI find job opportunities that perfectly match your skills and experience.
-                </p>
-                <Button onClick={handleFindJobs} disabled={isFindingJobs} className="text-base px-6 py-2 h-auto shadow-custom-lg">
-                     {isFindingJobs ? (
-                        <>
-                            <Spinner className="-ml-1 mr-3" />
-                            Finding Jobs...
-                        </>
-                     ) : (
-                        <>
-                            <IconSearch className="mr-2 h-4 w-4" /> Find Matching Jobs
-                        </>
-                     )}
-                </Button>
-            </div>
+            {isFindingJobs && (
+              <div className="flex justify-center items-center flex-col text-center pt-8">
+                  <Spinner className="h-8 w-8 text-primary mb-4" />
+                  <p className="text-muted-foreground font-medium">Searching for AI-powered job matches...</p>
+              </div>
+            )}
 
             {jobsError && <p className="text-sm text-destructive mt-4 text-center">{jobsError}</p>}
 
