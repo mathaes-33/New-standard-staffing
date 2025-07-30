@@ -17,10 +17,9 @@ import PrivacyPolicy from './components/PrivacyPolicy';
 import AuthWall from './components/AuthWall';
 import { IconClipboardList, IconSearch, IconBuilding2, Spinner } from './components/icons';
 import type { Job, Application } from './types';
-
+import netlifyIdentity from 'netlify-identity-widget';
 function App() {
   const { user, isAuthenticated, isLoading, loginWithRedirect } = useAuth0();
-import netlifyIdentity from 'netlify-identity-widget';
   // This namespace must match the one defined in your Auth0 Rule or Action
   // to correctly read user roles from the ID token.
   const AUTH0_ROLES_NAMESPACE = 'https://new-standard-staffing.com/roles';
