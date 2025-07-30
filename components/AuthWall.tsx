@@ -1,7 +1,7 @@
 
 
 import React from 'react';
-import { useAuth0 } from '@auth0/auth0-react';
+import netlifyIdentity from 'netlify-identity-widget';
 import { Card, CardContent } from './ui/Card';
 import Button from './ui/Button';
 
@@ -12,10 +12,9 @@ interface AuthWallProps {
 }
 
 const AuthWall: React.FC<AuthWallProps> = ({ icon: Icon, title, description }) => {
-  const { loginWithRedirect } = useAuth0();
-
-  const handleLogin = () => loginWithRedirect();
-  const handleSignup = () => loginWithRedirect({ authorizationParams: { screen_hint: 'signup' } });
+  const handleLogin = () => {
+    netlifyIdentity.open();
+  };
 
   return (
     <Card>
@@ -28,8 +27,7 @@ const AuthWall: React.FC<AuthWallProps> = ({ icon: Icon, title, description }) =
           {description}
         </p>
         <div className="flex gap-4">
-          <Button onClick={handleLogin} variant="secondary">Login</Button>
-          <Button onClick={handleSignup}>Sign Up</Button>
+          <Button onClick={handleLogin} variant="secondary">Login / Signup</Button>
         </div>
       </CardContent>
     </Card>

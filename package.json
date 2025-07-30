@@ -9,16 +9,19 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@google/genai": "^1.10.0",
+    "@netlify/functions": "^4.1.12",
+    "lucide-react": "^0.525.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "@google/genai": "^1.10.0",
-    "lucide-react": "^0.525.0",
-    "recharts": "^2.13.0",
-    "netlify-identity-widget": "^1.9.2",
-    "@netlify/functions": "^4.1.12"
+    "recharts": "^2.13.0"
   },
   "devDependencies": {
+    "@types/netlify-identity-widget": "^1.9.6",
     "@types/node": "^22.14.0",
+    "@types/react": "^19.1.9",
+    "@types/react-dom": "^19.1.7",
+    "netlify-identity-widget": "^1.9.2",
     "typescript": "~5.7.2",
     "vite": "^6.2.0"
   }

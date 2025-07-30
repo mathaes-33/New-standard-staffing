@@ -17,7 +17,7 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       rollupOptions: {
-        external: ['@auth0/auth0-react'],
+        // external: [],
       },
     },
   };

@@ -20,7 +20,7 @@ import type { Job, Application } from './types';
 
 function App() {
   const { user, isAuthenticated, isLoading, loginWithRedirect } = useAuth0();
-  
+import netlifyIdentity from 'netlify-identity-widget';
   // This namespace must match the one defined in your Auth0 Rule or Action
   // to correctly read user roles from the ID token.
   const AUTH0_ROLES_NAMESPACE = 'https://new-standard-staffing.com/roles';
@@ -38,7 +38,10 @@ function App() {
   const handleJobStatusUpdate = (jobId: string, status: 'approved' | 'rejected') => {
     setJobs(prevJobs => 
       prevJobs.map(job => 
-        job.id === jobId ? { ...job, status } : job
+  const [user, setUser] = useState<any>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const isAdmin = false; // You can implement admin logic using Netlify Identity user metadata if needed.
       )
     );
     if(status === 'rejected') {
@@ -86,12 +89,10 @@ function App() {
     return (
         <div className="flex items-center justify-center min-h-screen bg-secondary">
             <Spinner className="h-10 w-10 text-primary" />
-        </div>
-    );
-  }
-
-  return (
-    <div className="flex flex-col min-h-screen bg-secondary font-sans">
+    if (!isAuthenticated) {
+      netlifyIdentity.open();
+      return;
+    }
       <Header isAdmin={isAdmin} />
       <main className="flex-grow">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20 space-y-16 md:space-y-24">
